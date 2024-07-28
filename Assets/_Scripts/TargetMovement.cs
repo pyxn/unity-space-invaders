@@ -4,6 +4,7 @@ using System;
 
 public class TargetBehaviour : MonoBehaviour
 {
+    [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float minMoveSpeed = 1f;
     [SerializeField] private float maxMoveSpeed = 3f;
     [SerializeField] private float minRestTime = 1f;
@@ -63,32 +64,33 @@ public class TargetBehaviour : MonoBehaviour
         // Check if the collided object has the "Boundary" tag
         if (other.CompareTag("Boundary")) // the boundary must have a box collider that has trigger set, and also a rigidbody 2d
         {
-            // Debug.Log("2D Trigger Enter: Hit Boundary " + other.gameObject.name);
-            // Reverse the direction
             ReverseDirection();
         }
         else if (other.CompareTag("Projectile"))  // the projectile must have a box collider that has trigger set, and also a rigidbody 2d
         {
-            // Debug.Log("2D Trigger Enter: Hit Projectile " + other.gameObject.name);
-            Destroy(other.gameObject);
+            ProjectileImpact(other.gameObject);
         }
-        // Ignore collisions with objects of the same type
         else if (other.GetComponent<TargetBehaviour>() != null)
         {
-            // Do nothing, ignore the collision
             return;
         }
-        // Optional: Log collisions with other objects
         else
         {
-            Debug.Log("2D Trigger Enter: Hit " + other.gameObject.name + " (ignored)");
+            // do nothing
         }
     }
 
     private void ReverseDirection()
     {
-        // Multiply the current direction by -1 to reverse it
         currentDirection *= -1f;
+    }
+
+    private void ProjectileImpact(GameObject projectile)
+    {
+        OnProjectileHit?.Invoke(this, EventArgs.Empty);
+        Destroy(projectile);
+        Destroy(gameObject);
+        Instantiate(explosionPrefab, transform.position, Quaternion.identity);
     }
 
 }

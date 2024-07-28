@@ -23,7 +23,6 @@ public class ProjectileShooter: MonoBehaviour
 
     private void OnPlayerFire(object sender, System.EventArgs e)
     {
-        Debug.Log("Player fired!");
         Instantiate(projectilePrefab, transform.position, Quaternion.identity);
         // Add your projectile shooting logic here
     }

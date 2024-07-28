@@ -21,10 +21,7 @@ public class PlayerMovement : MonoBehaviour
         rigidBody.linearVelocity = new Vector2(_moveDirection.x * moveSpeed, _moveDirection.y * moveSpeed);
     }
 
-
-    /*
-    FIRE METHOD
-     */
+    /* FIRE METHOD */
     private void OnEnable()
     {
         fire.action.started += Fire;

@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
-public class TargetMovement : MonoBehaviour
+public class TargetBehaviour : MonoBehaviour
 {
     [SerializeField] private float minMoveSpeed = 1f;
     [SerializeField] private float maxMoveSpeed = 3f;
@@ -13,6 +14,8 @@ public class TargetMovement : MonoBehaviour
     private float currentSpeed;
     private float currentDirection;
     private bool isResting = false;
+
+    public event EventHandler OnProjectileHit;
 
     private void Start()
     {
@@ -38,35 +41,39 @@ public class TargetMovement : MonoBehaviour
             // Walking phase
             StartNewMovement();
             isResting = false;
-            yield return new WaitForSeconds(Random.Range(minWalkTime, maxWalkTime));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(minWalkTime, maxWalkTime));
 
             // Resting phase
             isResting = true;
-            yield return new WaitForSeconds(Random.Range(minRestTime, maxRestTime));
+            yield return new WaitForSeconds(UnityEngine.Random.Range(minRestTime, maxRestTime));
         }
     }
 
     private void StartNewMovement()
     {
         // Set random speed within the defined range
-        currentSpeed = Random.Range(minMoveSpeed, maxMoveSpeed);
+        currentSpeed = UnityEngine.Random.Range(minMoveSpeed, maxMoveSpeed);
 
         // Set random direction (left or right)
-        currentDirection = Random.value > 0.5f ? 1f : -1f;
+        currentDirection = UnityEngine.Random.value > 0.5f ? 1f : -1f;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         // Check if the collided object has the "Boundary" tag
-        if (other.CompareTag("Boundary"))
+        if (other.CompareTag("Boundary")) // the boundary must have a box collider that has trigger set, and also a rigidbody 2d
         {
-            Debug.Log("2D Trigger Enter: Hit Boundary " + other.gameObject.name);
-            
+            // Debug.Log("2D Trigger Enter: Hit Boundary " + other.gameObject.name);
             // Reverse the direction
             ReverseDirection();
         }
+        else if (other.CompareTag("Projectile"))  // the projectile must have a box collider that has trigger set, and also a rigidbody 2d
+        {
+            // Debug.Log("2D Trigger Enter: Hit Projectile " + other.gameObject.name);
+            Destroy(other.gameObject);
+        }
         // Ignore collisions with objects of the same type
-        else if (other.GetComponent<TargetMovement>() != null)
+        else if (other.GetComponent<TargetBehaviour>() != null)
         {
             // Do nothing, ignore the collision
             return;
@@ -83,4 +90,5 @@ public class TargetMovement : MonoBehaviour
         // Multiply the current direction by -1 to reverse it
         currentDirection *= -1f;
     }
+
 }

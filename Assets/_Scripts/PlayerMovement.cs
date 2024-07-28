@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private InputActionReference move;
     [SerializeField] private InputActionReference fire;
+
+    public event EventHandler OnFire;
 
 
     private void Update()
@@ -34,6 +37,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Fire(InputAction.CallbackContext obj)
     {
-        Debug.Log("Fired");
+        OnFire?.Invoke(this, EventArgs.Empty);
     }
 }

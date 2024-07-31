@@ -5,8 +5,6 @@ public class BoidManager : MonoBehaviour
 {
     public GameObject boidPrefab;
     public Rect spawnBounds;
-
-    private int currentBoidCount = 0;
     private float elapsedTime = 0f;
     private const float totalTime = 120f;
     private const float spawnInterval = 1.618f;
@@ -40,7 +38,6 @@ public class BoidManager : MonoBehaviour
                 Random.Range(spawnBounds.yMin, spawnBounds.yMax)
             );
             Instantiate(boidPrefab, randomPosition, Quaternion.identity);
-            currentBoidCount++;
         }
         // Debug.Log($"Current boid count: {currentBoidCount}");
     }

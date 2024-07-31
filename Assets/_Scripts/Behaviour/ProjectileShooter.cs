@@ -3,27 +3,37 @@ using UnityEngine;
 public class ProjectileShooter: MonoBehaviour
 {
     [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private Player playerMovement;
+    [SerializeField] private Player player;
+    [SerializeField] private float projectileSpeed = 13f;
     
     private void OnEnable()
     {
-        if (playerMovement != null)
+        if (player != null)
         {
-            playerMovement.OnFire += OnPlayerFire;
+            player.OnFire += Player_OnFire;
         }
     }
 
     private void OnDisable()
     {
-        if (playerMovement != null)
+        if (player != null)
         {
-            playerMovement.OnFire -= OnPlayerFire;
+            player.OnFire -= Player_OnFire;
         }
     }
 
-    private void OnPlayerFire(object sender, System.EventArgs e)
+    private void Player_OnFire(object sender, FireEventArgs e)
     {
-        Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-        // Add your projectile shooting logic here
+        FireProjectile(e.Direction, projectileSpeed);
     }
+
+    private void FireProjectile(Vector2 direction, float speed)
+{
+    GameObject projectile = Instantiate(projectilePrefab, player.transform.position, Quaternion.identity);
+    Projectile projectileComponent = projectile.GetComponent<Projectile>();
+    if (projectileComponent != null)
+    {
+        projectileComponent.Initialize(Vector2.up, speed);
+    }
+}
 }

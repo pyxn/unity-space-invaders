@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
     {
         MainMenu,
         Loading,
-        Game
+        Game,
+        GameOver
     }
 
     public GameState CurrentState { get; private set; }
@@ -59,6 +60,9 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.Game:
                 StartCoroutine(TransitionToGameScene());
+                break;
+            case GameState.GameOver:
+                Debug.Log("GAME OVER.");
                 break;
             default:
                 Debug.LogError($"Unhandled game state: {newState}");

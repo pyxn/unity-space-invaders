@@ -4,8 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
+    public event EventHandler OnPlayerDeath;
     [SerializeField] private InputActionReference actionMove;
     [SerializeField] private InputActionReference actionFire;    
     // [SerializeField] private Rigidbody2D rigidBody;
@@ -14,6 +15,13 @@ public class PlayerMovement : MonoBehaviour
 
     public event EventHandler OnFire;
 
+    private void Start()
+    {
+        OnPlayerDeath += Player_OnPlayerDeath;
+    }
+    private void OnDestroy() {
+        OnPlayerDeath -= Player_OnPlayerDeath;
+    }
     private void Update()
     {
         Move();
@@ -55,9 +63,17 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("Boid")) 
         {
+            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            Destroy(gameObject);
         }
     }
+
+    private void Player_OnPlayerDeath(object sender, EventArgs e) 
+    {
+        GameManager.Instance.ChangeState(GameManager.GameState.GameOver);
+    }
+
 
     private Vector2 GetScreenBounds()
 {

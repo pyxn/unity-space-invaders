@@ -3,7 +3,7 @@ using UnityEngine;
 public class ProjectileShooter: MonoBehaviour
 {
     [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private Player playerMovement;
     
     private void OnEnable()
     {

@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(TransitionToGameScene());
                 break;
             case GameState.GameOver:
-                Debug.Log("GAME OVER.");
+                // Debug.Log("GAME OVER.");
                 break;
             default:
                 Debug.LogError($"Unhandled game state: {newState}");

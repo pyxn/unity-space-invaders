@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Data.Common;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,12 +18,16 @@ public class Player : MonoBehaviour
     // [SerializeField] private Rigidbody2D rigidBody;
     [SerializeField] private float moveSpeed = 5f;
     private Vector2 actionMoveDirection;
-
     public event EventHandler<FireEventArgs> OnFire;
+    [SerializeField] private float invulnerabilityDuration = 3f;
+    public bool IsInvulnerable { get; private set; }
+
+    private Coroutine invulnerabilityCoroutine;
 
     private void Start()
     {
         OnPlayerDeath += Player_OnPlayerDeath;
+        StartInvulnerability();
     }
     private void OnDestroy()
     {
@@ -31,6 +36,21 @@ public class Player : MonoBehaviour
     private void Update()
     {
         Move();
+    }
+    private void StartInvulnerability()
+    {
+        if (invulnerabilityCoroutine != null)
+        {
+            StopCoroutine(invulnerabilityCoroutine);
+        }
+        invulnerabilityCoroutine = StartCoroutine(InvulnerabilityCoroutine());
+    }
+
+    private IEnumerator InvulnerabilityCoroutine()
+    {
+        IsInvulnerable = true;
+        yield return new WaitForSeconds(invulnerabilityDuration);
+        IsInvulnerable = false;
     }
 
     private void OnEnable()
@@ -67,15 +87,15 @@ public class Player : MonoBehaviour
     }
 
     private void OnFirePerformed(InputAction.CallbackContext obj)
-{
-    Vector2 fireDirection = transform.up; // This gives the direction the player is facing
-    OnFire?.Invoke(this, new FireEventArgs { Direction = fireDirection });
-}
+    {
+        Vector2 fireDirection = transform.up; // This gives the direction the player is facing
+        OnFire?.Invoke(this, new FireEventArgs { Direction = fireDirection });
+    }
 
     [SerializeField] private GameObject explosionPrefab;
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Boid"))
+        if (!IsInvulnerable && other.CompareTag("Boid"))
         {
             OnPlayerDeath?.Invoke(this, EventArgs.Empty);
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
@@ -95,4 +115,5 @@ public class Player : MonoBehaviour
         Vector2 screenBounds = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, mainCamera.transform.position.z));
         return screenBounds;
     }
+
 }

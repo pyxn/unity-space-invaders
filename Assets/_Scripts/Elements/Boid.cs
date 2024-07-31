@@ -4,6 +4,7 @@ using UnityEngine;
 public class Boid : MonoBehaviour
 {
     private bool canClone = true;
+    public event EventHandler OnBoidCreation;
     public event EventHandler OnBoidDestruction;
     public float speed = 5f;
     public float neighborRadius = 2f;
@@ -18,6 +19,7 @@ public class Boid : MonoBehaviour
 
     private void Start()
     {
+        OnBoidCreation += Boid_OnBoidCreation;
         OnBoidDestruction += Boid_OnBoidDestruction;
         velocity = UnityEngine.Random.insideUnitCircle.normalized * speed;
         bounds = FindAnyObjectByType<BoidManager>().spawnBounds;
@@ -113,6 +115,7 @@ public class Boid : MonoBehaviour
             Vector2 offset = UnityEngine.Random.insideUnitCircle * 0.5f; // Small random offset
             Vector3 spawnPosition = transform.position + (Vector3)offset;
             Instantiate(boidPrefab, spawnPosition, Quaternion.identity);
+            OnBoidCreation?.Invoke(this, EventArgs.Empty);
         }
         else
         {
@@ -157,10 +160,18 @@ public class Boid : MonoBehaviour
         }
     }
 
+    private void Boid_OnBoidCreation(object sender, EventArgs e)
+    {
+        BoidManager.Instance.IncrementBoids();
+    }
     private void Boid_OnBoidDestruction(object sender, EventArgs e)
     {
-        // Debug.Log("BOID DESTROYED!!!");
         ScoreManager.Instance.IncrementScore();
+        BoidManager.Instance.DecrementBoids();
+        if (BoidManager.Instance.NoBoidsRemaining())
+        {
+            GameManager.Instance.ChangeState(GameManager.GameState.GameOver);
+        }
     }
     private void HandleGameStateChanged(GameManager.GameState newState)
     {

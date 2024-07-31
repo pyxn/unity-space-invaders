@@ -17,6 +17,7 @@ public class Boid : MonoBehaviour
 
     private void Start()
     {
+        OnBoidDestruction += Boid_OnBoidDestruction;
         velocity = UnityEngine.Random.insideUnitCircle.normalized * speed;
         bounds = FindAnyObjectByType<BoidManager>().spawnBounds;
     }
@@ -141,5 +142,16 @@ public class Boid : MonoBehaviour
             Destroy(gameObject);
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         }
+    }
+
+    private void OnDestroy()
+    {
+        OnBoidDestruction -= Boid_OnBoidDestruction;
+    }
+
+    private void Boid_OnBoidDestruction(object sender, EventArgs e)
+    {
+        // Debug.Log("BOID DESTROYED!!!");
+        ScoreManager.Instance.IncrementScore();
     }
 }

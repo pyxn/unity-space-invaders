@@ -41,6 +41,9 @@ public class BoidManager : MonoBehaviour
             Instantiate(boidPrefab, randomPosition, Quaternion.identity);
             currentBoidCount++;
         }
-        Debug.Log($"Current boid count: {currentBoidCount}");
+        // Debug.Log($"Current boid count: {currentBoidCount}");
     }
+
+    
+
 }

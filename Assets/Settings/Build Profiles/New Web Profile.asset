@@ -19,7 +19,9 @@ MonoBehaviour:
     rid: 6607558641338548317
   m_Scenes:
   - m_enabled: 1
-    m_path: Assets/Scenes/Level_01.unity
+    m_path: Assets/_Scenes/GameScene.unity
+  - m_enabled: 1
+    m_path: Assets/_Scenes/LoadingScene.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings:

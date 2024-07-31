@@ -21,10 +21,36 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnStateChanged += HandleGameStateChanged;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnStateChanged -= HandleGameStateChanged;
+        }
+    }
+
+    private bool canIncrementScore = true;
+
+    private void HandleGameStateChanged(GameManager.GameState newState)
+    {
+        canIncrementScore = newState != GameManager.GameState.GameOver;
+    }
+
     public void IncrementScore()
     {
-        score++;
-        OnScoreChanged?.Invoke(score);
+        if (canIncrementScore)
+        {
+            score++;
+            OnScoreChanged?.Invoke(score);
+        }
     }
 
     public event System.Action<int> OnScoreChanged;

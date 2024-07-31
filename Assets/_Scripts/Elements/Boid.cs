@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour
 {
+    private bool canClone = true;
     public event EventHandler OnBoidDestruction;
     public float speed = 5f;
     public float neighborRadius = 2f;
@@ -20,17 +21,20 @@ public class Boid : MonoBehaviour
         OnBoidDestruction += Boid_OnBoidDestruction;
         velocity = UnityEngine.Random.insideUnitCircle.normalized * speed;
         bounds = FindAnyObjectByType<BoidManager>().spawnBounds;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnStateChanged += HandleGameStateChanged;
+        }
     }
 
 
     private void Update()
     {
 
-        // Increment the lifetime
         lifetime += Time.deltaTime;
 
         // Check if it's time to clone and hasn't cloned yet
-        if (lifetime > 13f && !hasCloned)
+        if (lifetime > 13f && !hasCloned && canClone)
         {
             CloneBoid();
             hasCloned = true;
@@ -147,11 +151,19 @@ public class Boid : MonoBehaviour
     private void OnDestroy()
     {
         OnBoidDestruction -= Boid_OnBoidDestruction;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnStateChanged -= HandleGameStateChanged;
+        }
     }
 
     private void Boid_OnBoidDestruction(object sender, EventArgs e)
     {
         // Debug.Log("BOID DESTROYED!!!");
         ScoreManager.Instance.IncrementScore();
+    }
+    private void HandleGameStateChanged(GameManager.GameState newState)
+    {
+        canClone = newState != GameManager.GameState.GameOver;
     }
 }

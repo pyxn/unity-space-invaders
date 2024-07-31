@@ -13,11 +13,12 @@ public class BoidManager : MonoBehaviour
 
     private void Start()
     {
-        // Spawn initial 10 boids
-        SpawnBoids(13);
+        // Spawn initial 8 boids
+        SpawnBoids(8);
 
         // Start the coroutine to spawn additional boids
-        StartCoroutine(SpawnBoidsOverTime());
+        // StartCoroutine(SpawnBoidsOverTime());
+        
     }
 
     private IEnumerator SpawnBoidsOverTime()

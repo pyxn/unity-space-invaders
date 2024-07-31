@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         switch (newState)
         {
             case GameState.MainMenu:
-                StartCoroutine(LoadSceneAsync(mainMenuSceneName));
+                StartCoroutine(TransitionToMainMenu());
                 break;
             case GameState.Loading:
                 StartCoroutine(LoadLoadingScene());
@@ -91,7 +91,13 @@ public class GameManager : MonoBehaviour
         // Switch to the game scene
         ChangeState(GameState.Game);
     }
-
+private IEnumerator TransitionToMainMenu()
+{
+    Debug.Log("Starting transition to Main Menu");
+    yield return StartCoroutine(LoadSceneAsync(mainMenuSceneName));
+    Debug.Log("Main Menu scene loaded");
+    // Additional setup for main menu if needed
+}
     private IEnumerator TransitionToGameScene()
     {
         if (gameSceneLoadOperation != null && gameSceneLoadOperation.progress >= 0.9f)

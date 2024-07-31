@@ -33,7 +33,7 @@ public class ProjectileShooter: MonoBehaviour
     Projectile projectileComponent = projectile.GetComponent<Projectile>();
     if (projectileComponent != null)
     {
-        projectileComponent.Initialize(Vector2.up, speed);
+        projectileComponent.Initialize(direction, speed);
     }
 }
 }

@@ -67,14 +67,10 @@ public class Player : MonoBehaviour
     }
 
     private void OnFirePerformed(InputAction.CallbackContext obj)
-    {
-        Vector2 fireDirection = actionMoveDirection.normalized;
-        if (fireDirection == Vector2.zero)
-        {
-            fireDirection = Vector2.up; // Default direction if player is not moving
-        }
-        OnFire?.Invoke(this, new FireEventArgs { Direction = fireDirection });
-    }
+{
+    Vector2 fireDirection = transform.up; // This gives the direction the player is facing
+    OnFire?.Invoke(this, new FireEventArgs { Direction = fireDirection });
+}
 
     [SerializeField] private GameObject explosionPrefab;
     private void OnTriggerEnter2D(Collider2D other)
